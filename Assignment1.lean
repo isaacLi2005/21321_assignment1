@@ -43,7 +43,10 @@ def exercise02 (A B C : Type)
 
 -- --@[autogradedDef 1]
 def exercise03 (A B C : Type) : A → B → C → B := by
-  exact fun (a: A) (b: B) (c: C) ↦ b
+  intro a
+  intro b
+  intro c
+  exact b
 
 -- --@[autogradedProof 1]
 theorem exercise04 (P Q : Prop) : P → (P → Q) → Q := by
@@ -55,7 +58,8 @@ theorem exercise04 (P Q : Prop) : P → (P → Q) → Q := by
 -- --@[autogradedProof 1]
 theorem exercise05 (P Q R : Prop) (h : P → Q → R) (hP : P) :
     Q → R := by
-  sorry
+  intro (hQ: Q)
+  exact h hP hQ
 
 -- Composition and backward use. Reason backward with `apply` at least once in
 -- each exercise. In the first, determine which assumption is unnecessary.
@@ -63,12 +67,13 @@ theorem exercise05 (P Q R : Prop) (h : P → Q → R) (hP : P) :
 -- --@[autogradedProof 2]
 theorem exercise06 (P Q R : Prop) (hPQ : P → Q) (hPR : P → R) :
     P → Q := by
-  sorry
+  apply hPQ
 
 -- --@[autogradedProof 2]
 theorem exercise07 (P Q R : Prop) (hQR : Q → R) :
     P → Q → R := by
-  sorry
+  intro (hP: P)
+  apply hQR
 
 -- Transitivity of implication. Exercises 08 and 09 state the same
 -- implication. Reason backward with `apply` at least once in the tactic proof.
@@ -76,12 +81,17 @@ theorem exercise07 (P Q R : Prop) (hQR : Q → R) :
 ----@[autogradedProof 1]
 theorem exercise08 (P Q R : Prop) :
     (P → Q) → (Q → R) → (P → R) :=
-  sorry
+  fun (hPQ: P → Q) ↦ fun (hQR: Q → R) ↦ fun (hP: P) ↦ hQR (hPQ hP)
 
 ----@[autogradedProof 2]
 theorem exercise09 (P Q R : Prop) :
     (P → Q) → (Q → R) → (P → R) := by
-  sorry
+    intro (hPQ: P → Q)
+    intro (hQR: Q → R)
+    intro (hP: P)
+    apply hQR
+    apply hPQ
+    exact hP
 
 /-! ## Products and Conjunction -/
 
@@ -89,37 +99,42 @@ theorem exercise09 (P Q R : Prop) :
 
 ----@[autogradedDef 1]
 def exercise10 (A B : Type) (a : A) (b : B) : B × A :=
-  sorry
+  (b, a)
 
 ----@[autogradedDef 1]
 def exercise11 (A B C : Type) (p : A × B × C) : B :=
-  sorry
+  p.2.1
 
 ----@[autogradedDef 1]
 def exercise12 (A B C : Type) : A × B × C → C × A :=
-  sorry
+  fun (p: A × B × C) ↦ Prod.mk p.2.2 p.1
 
 -- Conjunctions and compound goals. Give a direct term for the first.
 
 ----@[autogradedProof 1]
 theorem exercise13 (P Q : Prop) (hP : P) (hQ : Q) : Q ∧ P :=
-  sorry
+  And.intro hQ hP
 
 ----@[autogradedProof 2]
 theorem exercise14 (P Q R : Prop) : P ∧ Q ∧ R → R ∧ P := by
-  sorry
+  intro hPQR
+  exact And.intro hPQR.2.2 hPQR.1
 
 ----@[autogradedProof 2]
 theorem exercise15 (P Q R : Prop) :
     P → Q → R → (P ∧ Q) ∧ R := by
-  sorry
+  intro (hP: P)
+  intro (hQ: Q)
+  intro (hR: R)
+  exact ⟨(⟨hP, hQ⟩), hR ⟩
 
 -- Regrouping.
 
 ----@[autogradedDef 2]
 def exercise16 (A B C : Type) :
     A × (B × C) → (A × B) × C := by
-  sorry
+  intro (a: A × (B × C))
+  exact Prod.mk (Prod.mk a.1 a.2.1) a.2.2
 
 -- Functions with products and conjunctions. Give direct terms for the
 -- Type-level exercises.
@@ -127,43 +142,53 @@ def exercise16 (A B C : Type) :
 ----@[autogradedDef 1]
 def exercise17 (X A B : Type) :
     (X → A × B) → (X → A) × (X → B) :=
-  sorry
+  fun (xAB) ↦ (fun x ↦ (xAB x).1, fun x ↦ (xAB x).2)
 
 ----@[autogradedProof 3]
 theorem exercise18 (P Q R : Prop) :
     (P → Q ∧ R) → (P → Q) ∧ (P → R) := by
-  sorry
+  intro (pQR: P → Q ∧ R)
+  exact ⟨fun x ↦ (pQR x).1, fun x ↦ (pQR x).2⟩
 
 ----@[autogradedDef 1]
 def exercise19 (X A B : Type) :
     (X → A) × (X → B) → (X → A × B) :=
-  sorry
+  fun x ↦ fun y ↦ (x.1 y, x.2 y)
 
 -- Composition. Reason backward with `apply` at least once.
 
 ----@[autogradedProof 2]
 theorem exercise20 (P Q R : Prop) :
     (P → Q) ∧ (Q → R) → P → R := by
-  sorry
+  intro c
+  intro hP
+  apply c.2
+  apply c.1
+  exact hP
 
 -- Currying and uncurrying. Exercises 21 and 22 state the same function.
 
 ----@[autogradedDef 1]
 def exercise21 (A B C : Type) :
     (A × B → C) → (A → B → C) :=
-  sorry
+  fun abc ↦ fun a ↦ fun b ↦ abc (a, b)
 
 ----@[autogradedDef 1]
 def exercise22 (A B C : Type) :
     (A × B → C) → (A → B → C) := by
-  sorry
+  intro abc
+  intro a
+  intro b
+  exact abc (a, b)
 
 -- The corresponding uncurrying at the level of propositions.
 
 ----@[autogradedProof 1]
 theorem exercise23 (P Q R : Prop) :
     (P → Q → R) → (P ∧ Q → R) := by
-  sorry
+  intro pqr
+  intro hPQ
+  exact pqr hPQ.1 hPQ.2
 
 /-! ## Coproducts and Disjunction -/
 
@@ -171,27 +196,33 @@ theorem exercise23 (P Q R : Prop) :
 
 ----@[autogradedDef 1]
 def exercise24 (A B : Type) (a : A) : B ⊕ A :=
-  sorry
+  Sum.inr a
 
 ----@[autogradedDef 1]
 def exercise25 (A B C : Type) (b : B) :
     (A ⊕ B) ⊕ C :=
-  sorry
+  Sum.inl (Sum.inr b)
 
 ----@[autogradedProof 1]
 theorem exercise26 (P Q R : Prop) (hR : R) :
     P ∨ Q ∨ R :=
-  sorry
+  Or.inr (Or.inr hR)
 
 -- Case analysis. Use `cases ... with` in the second.
 
 --@[autogradedProof 2]
 theorem exercise27 (P Q : Prop) : P ∧ Q → P ∨ Q := by
-  sorry
+  intro pq
+  exact Or.inl pq.1
 
 --@[autogradedDef 2]
 def exercise28 (A : Type) : A ⊕ A → A := by
-  sorry
+  intro aa
+  cases aa with
+  | inl a =>
+    exact a
+  | inr b =>
+    exact b
 
 -- Swapping alternatives. Exercises 29 and 30 state the same function. Use
 -- `Sum.elim` in the term proof; make the tactic proof split cases with
@@ -199,18 +230,33 @@ def exercise28 (A : Type) : A ⊕ A → A := by
 
 --@[autogradedDef 1]
 def exercise29 (A B : Type) : A ⊕ B → B ⊕ A :=
-  sorry
+  fun ab ↦ Sum.elim (fun a ↦ Sum.inr a) (fun b ↦ Sum.inl b) ab
 
 --@[autogradedDef 2]
 def exercise30 (A B : Type) : A ⊕ B → B ⊕ A := by
-  sorry
+  intro ab
+  cases ab with
+  | inl a
+    => exact Sum.inr a
+  | inr b
+    => exact Sum.inl b
 
 -- Regrouping.
 
 --@[autogradedDef 3]
 def exercise31 (A B C : Type) :
     A ⊕ (B ⊕ C) → (A ⊕ B) ⊕ C := by
-  sorry
+  intro abc
+  cases abc with
+  | inl a =>
+      exact Sum.inl (Sum.inl a)
+  | inr bc =>
+    cases bc with
+      | inl b =>
+          exact Sum.inl (Sum.inr b)
+      | inr c =>
+          exact Sum.inr c
+
 
 -- Three alternatives at once. Use a single `rcases` pattern naming all three
 -- cases.
