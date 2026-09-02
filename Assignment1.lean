@@ -67,13 +67,17 @@ theorem exercise05 (P Q R : Prop) (h : P → Q → R) (hP : P) :
 -- --@[autogradedProof 2]
 theorem exercise06 (P Q R : Prop) (hPQ : P → Q) (hPR : P → R) :
     P → Q := by
-  apply hPQ
+    intro hP
+    apply hPQ
+    exact hP
 
 -- --@[autogradedProof 2]
 theorem exercise07 (P Q R : Prop) (hQR : Q → R) :
     P → Q → R := by
-  intro (hP: P)
-  apply hQR
+    intro hP
+    intro hQ
+    apply hQR
+    exact hQ
 
 -- Transitivity of implication. Exercises 08 and 09 state the same
 -- implication. Reason backward with `apply` at least once in the tactic proof.
@@ -118,7 +122,9 @@ theorem exercise13 (P Q : Prop) (hP : P) (hQ : Q) : Q ∧ P :=
 ----@[autogradedProof 2]
 theorem exercise14 (P Q R : Prop) : P ∧ Q ∧ R → R ∧ P := by
   intro hPQR
-  exact And.intro hPQR.2.2 hPQR.1
+  constructor
+  · exact hPQR.2.2
+  · exact hPQR.1
 
 ----@[autogradedProof 2]
 theorem exercise15 (P Q R : Prop) :
@@ -126,7 +132,11 @@ theorem exercise15 (P Q R : Prop) :
   intro (hP: P)
   intro (hQ: Q)
   intro (hR: R)
-  exact ⟨(⟨hP, hQ⟩), hR ⟩
+  constructor
+  · constructor
+    · exact hP
+    · exact hQ
+  · exact hR
 
 -- Regrouping.
 
@@ -134,7 +144,12 @@ theorem exercise15 (P Q R : Prop) :
 def exercise16 (A B C : Type) :
     A × (B × C) → (A × B) × C := by
   intro (a: A × (B × C))
-  exact Prod.mk (Prod.mk a.1 a.2.1) a.2.2
+  constructor
+  · constructor
+    · exact a.1
+    · exact a.2.1
+  · exact a.2.2
+
 
 -- Functions with products and conjunctions. Give direct terms for the
 -- Type-level exercises.
@@ -148,7 +163,9 @@ def exercise17 (X A B : Type) :
 theorem exercise18 (P Q R : Prop) :
     (P → Q ∧ R) → (P → Q) ∧ (P → R) := by
   intro (pQR: P → Q ∧ R)
-  exact ⟨fun x ↦ (pQR x).1, fun x ↦ (pQR x).2⟩
+  constructor
+  · exact fun p ↦ (pQR p).1
+  · exact fun p ↦ (pQR p).2
 
 ----@[autogradedDef 1]
 def exercise19 (X A B : Type) :
@@ -264,7 +281,11 @@ def exercise31 (A B C : Type) :
 --@[autogradedProof 3]
 theorem exercise32 (P Q R : Prop) :
     P ∨ Q ∨ R → R ∨ Q ∨ P := by
-  sorry
+  intro pqr
+  rcases pqr with  p | q | r
+  · exact Or.inr (Or.inr p)
+  · exact Or.inr (Or.inl q)
+  · exact Or.inl r
 
 -- Functions and proofs by cases. Give direct terms for the Type-level
 -- exercises. Use `Sum.elim` in Exercise 35.
@@ -272,22 +293,35 @@ theorem exercise32 (P Q R : Prop) :
 --@[autogradedDef 1]
 def exercise33 (A B C : Type) :
     (A ⊕ B → C) → (A → C) × (B → C) :=
-  sorry
+  fun abc ↦ (fun a ↦ abc (Sum.inl a), fun b ↦ abc (Sum.inr b))
 
 --@[autogradedProof 3]
 theorem exercise34 (P Q R : Prop) :
     (P ∨ Q → R) → (P → R) ∧ (Q → R) := by
-  sorry
+  intro pqr
+  constructor
+  · intro p
+    apply pqr
+    exact Or.inl p
+  · intro q
+    apply pqr
+    exact Or.inr q
 
 --@[autogradedDef 1]
 def exercise35 (A B C : Type) :
     (A → C) × (B → C) → (A ⊕ B → C) :=
-  sorry
+  fun (ACBC: (A → C) × (B → C)) ↦ Sum.elim ACBC.1 ACBC.2
 
 --@[autogradedProof 2]
 theorem exercise36 (P Q R : Prop) :
     (P → R) ∧ (Q → R) → (P ∨ Q → R) := by
-  sorry
+  intro PRQR
+  intro PQ
+  cases PQ with
+  | inl p
+    => exact PRQR.1 p
+  | inr q
+    => exact PRQR.2 q
 
 -- Combining alternatives with products and conjunctions. Give a direct term
 -- for the first, using `Sum.elim`.
