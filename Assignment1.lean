@@ -28,34 +28,34 @@ namespace Homework1
 
 -- Applying functions. Complete these with direct terms, without tactic mode.
 
--- --@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise01 (A B C D : Type)
     (f : A → B → C → D)
     (a : A) (b : B) (c : C) : D :=
     f a b c
 
--- --@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise02 (A B C : Type)
     (f : A → B) (g : A → B → C) (a : A) : C :=
   g a (f a)
 
 -- Constructing functions and implications.
 
--- --@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise03 (A B C : Type) : A → B → C → B := by
   intro a
   intro b
   intro c
   exact b
 
--- --@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise04 (P Q : Prop) : P → (P → Q) → Q := by
   intro (hP: P)
   intro (hPQ: P → Q)
   exact hPQ hP
 
 
--- --@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise05 (P Q R : Prop) (h : P → Q → R) (hP : P) :
     Q → R := by
   intro (hQ: Q)
@@ -64,14 +64,14 @@ theorem exercise05 (P Q R : Prop) (h : P → Q → R) (hP : P) :
 -- Composition and backward use. Reason backward with `apply` at least once in
 -- each exercise. In the first, determine which assumption is unnecessary.
 
--- --@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise06 (P Q R : Prop) (hPQ : P → Q) (hPR : P → R) :
     P → Q := by
     intro hP
     apply hPQ
     exact hP
 
--- --@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise07 (P Q R : Prop) (hQR : Q → R) :
     P → Q → R := by
     intro hP
@@ -82,12 +82,12 @@ theorem exercise07 (P Q R : Prop) (hQR : Q → R) :
 -- Transitivity of implication. Exercises 08 and 09 state the same
 -- implication. Reason backward with `apply` at least once in the tactic proof.
 
-----@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise08 (P Q R : Prop) :
     (P → Q) → (Q → R) → (P → R) :=
   fun (hPQ: P → Q) ↦ fun (hQR: Q → R) ↦ fun (hP: P) ↦ hQR (hPQ hP)
 
-----@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise09 (P Q R : Prop) :
     (P → Q) → (Q → R) → (P → R) := by
     intro (hPQ: P → Q)
@@ -101,32 +101,32 @@ theorem exercise09 (P Q R : Prop) :
 
 -- Constructing and projecting pairs. Complete these with direct terms.
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise10 (A B : Type) (a : A) (b : B) : B × A :=
   (b, a)
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise11 (A B C : Type) (p : A × B × C) : B :=
   p.2.1
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise12 (A B C : Type) : A × B × C → C × A :=
   fun (p: A × B × C) ↦ Prod.mk p.2.2 p.1
 
 -- Conjunctions and compound goals. Give a direct term for the first.
 
-----@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise13 (P Q : Prop) (hP : P) (hQ : Q) : Q ∧ P :=
   And.intro hQ hP
 
-----@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise14 (P Q R : Prop) : P ∧ Q ∧ R → R ∧ P := by
   intro hPQR
   constructor
   · exact hPQR.2.2
   · exact hPQR.1
 
-----@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise15 (P Q R : Prop) :
     P → Q → R → (P ∧ Q) ∧ R := by
   intro (hP: P)
@@ -140,7 +140,7 @@ theorem exercise15 (P Q R : Prop) :
 
 -- Regrouping.
 
-----@[autogradedDef 2]
+@[autogradedDef 2]
 def exercise16 (A B C : Type) :
     A × (B × C) → (A × B) × C := by
   intro (a: A × (B × C))
@@ -154,27 +154,29 @@ def exercise16 (A B C : Type) :
 -- Functions with products and conjunctions. Give direct terms for the
 -- Type-level exercises.
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise17 (X A B : Type) :
     (X → A × B) → (X → A) × (X → B) :=
   fun (xAB) ↦ (fun x ↦ (xAB x).1, fun x ↦ (xAB x).2)
 
-----@[autogradedProof 3]
+@[autogradedProof 3]
 theorem exercise18 (P Q R : Prop) :
     (P → Q ∧ R) → (P → Q) ∧ (P → R) := by
-  intro (pQR: P → Q ∧ R)
-  constructor
-  · exact fun p ↦ (pQR p).1
-  · exact fun p ↦ (pQR p).2
+    intro PQR
+    constructor
+    · intro hP
+      exact (PQR hP).1
+    · intro hP
+      exact (PQR hP).2
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise19 (X A B : Type) :
     (X → A) × (X → B) → (X → A × B) :=
   fun x ↦ fun y ↦ (x.1 y, x.2 y)
 
 -- Composition. Reason backward with `apply` at least once.
 
-----@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise20 (P Q R : Prop) :
     (P → Q) ∧ (Q → R) → P → R := by
   intro c
@@ -185,12 +187,12 @@ theorem exercise20 (P Q R : Prop) :
 
 -- Currying and uncurrying. Exercises 21 and 22 state the same function.
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise21 (A B C : Type) :
     (A × B → C) → (A → B → C) :=
   fun abc ↦ fun a ↦ fun b ↦ abc (a, b)
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise22 (A B C : Type) :
     (A × B → C) → (A → B → C) := by
   intro abc
@@ -200,7 +202,7 @@ def exercise22 (A B C : Type) :
 
 -- The corresponding uncurrying at the level of propositions.
 
-----@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise23 (P Q R : Prop) :
     (P → Q → R) → (P ∧ Q → R) := by
   intro pqr
@@ -211,28 +213,28 @@ theorem exercise23 (P Q R : Prop) :
 
 -- Constructing alternatives. Complete these with direct terms.
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise24 (A B : Type) (a : A) : B ⊕ A :=
   Sum.inr a
 
-----@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise25 (A B C : Type) (b : B) :
     (A ⊕ B) ⊕ C :=
   Sum.inl (Sum.inr b)
 
-----@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise26 (P Q R : Prop) (hR : R) :
     P ∨ Q ∨ R :=
   Or.inr (Or.inr hR)
 
 -- Case analysis. Use `cases ... with` in the second.
 
---@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise27 (P Q : Prop) : P ∧ Q → P ∨ Q := by
   intro pq
   exact Or.inl pq.1
 
---@[autogradedDef 2]
+@[autogradedDef 2]
 def exercise28 (A : Type) : A ⊕ A → A := by
   intro aa
   cases aa with
@@ -245,11 +247,11 @@ def exercise28 (A : Type) : A ⊕ A → A := by
 -- `Sum.elim` in the term proof; make the tactic proof split cases with
 -- `rcases` or `cases`.
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise29 (A B : Type) : A ⊕ B → B ⊕ A :=
   fun ab ↦ Sum.elim (fun a ↦ Sum.inr a) (fun b ↦ Sum.inl b) ab
 
---@[autogradedDef 2]
+@[autogradedDef 2]
 def exercise30 (A B : Type) : A ⊕ B → B ⊕ A := by
   intro ab
   cases ab with
@@ -260,7 +262,7 @@ def exercise30 (A B : Type) : A ⊕ B → B ⊕ A := by
 
 -- Regrouping.
 
---@[autogradedDef 3]
+@[autogradedDef 3]
 def exercise31 (A B C : Type) :
     A ⊕ (B ⊕ C) → (A ⊕ B) ⊕ C := by
   intro abc
@@ -278,7 +280,7 @@ def exercise31 (A B C : Type) :
 -- Three alternatives at once. Use a single `rcases` pattern naming all three
 -- cases.
 
---@[autogradedProof 3]
+@[autogradedProof 3]
 theorem exercise32 (P Q R : Prop) :
     P ∨ Q ∨ R → R ∨ Q ∨ P := by
   intro pqr
@@ -290,12 +292,12 @@ theorem exercise32 (P Q R : Prop) :
 -- Functions and proofs by cases. Give direct terms for the Type-level
 -- exercises. Use `Sum.elim` in Exercise 35.
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise33 (A B C : Type) :
     (A ⊕ B → C) → (A → C) × (B → C) :=
   fun abc ↦ (fun a ↦ abc (Sum.inl a), fun b ↦ abc (Sum.inr b))
 
---@[autogradedProof 3]
+@[autogradedProof 3]
 theorem exercise34 (P Q R : Prop) :
     (P ∨ Q → R) → (P → R) ∧ (Q → R) := by
   intro pqr
@@ -307,12 +309,12 @@ theorem exercise34 (P Q R : Prop) :
     apply pqr
     exact Or.inr q
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise35 (A B C : Type) :
     (A → C) × (B → C) → (A ⊕ B → C) :=
   fun (ACBC: (A → C) × (B → C)) ↦ Sum.elim ACBC.1 ACBC.2
 
---@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise36 (P Q R : Prop) :
     (P → R) ∧ (Q → R) → (P ∨ Q → R) := by
   intro PRQR
@@ -326,61 +328,80 @@ theorem exercise36 (P Q R : Prop) :
 -- Combining alternatives with products and conjunctions. Give a direct term
 -- for the first, using `Sum.elim`.
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise37 (A B C : Type) :
     (A × B) ⊕ (A × C) → A × (B ⊕ C) :=
-  sorry
+  fun x ↦ Sum.elim (fun y ↦ (y.1, Sum.inl y.2)) (fun z ↦ (z.1, Sum.inr z.2)) x
 
---@[autogradedProof 2]
+@[autogradedProof 2]
 theorem exercise38 (P Q R : Prop) :
     (P ∧ Q) ∨ (P ∧ R) → P ∧ (Q ∨ R) := by
-  sorry
+  intro PQPR
+  cases PQPR with
+  | inl PQ =>
+    constructor
+    · exact PQ.1
+    · exact Or.inl PQ.2
+  | inr PR =>
+    constructor
+    · exact PR.1
+    · exact Or.inr PR.2
+
+
 
 /-! ## Unit and Empty Types, Truth and Falsehood -/
 
 -- Direct construction and elimination. Complete each with a direct term,
 -- without tactic mode.
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise39 (A : Type) : A → Unit :=
-  sorry
+  fun a ↦ Unit.unit
 
---@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise40 (P : Prop) : P → True :=
-  sorry
+  fun p ↦ True.intro
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise41 (A : Type) (e : Empty) : A :=
-  sorry
+  Empty.elim e
 
---@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise42 (P : Prop) (hFalse : False) : P :=
-  sorry
+  False.elim hFalse
 
 -- Combining boundary cases with earlier constructions. Give a direct term for
 -- the first.
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise43 (A : Type) : (Unit → A) → A :=
-  sorry
+  fun unitToA ↦ unitToA Unit.unit
 
---@[autogradedProof 1]
+@[autogradedProof 1]
 theorem exercise44 (P Q : Prop) : P ∧ False → Q := by
-  sorry
+  intro PF
+  exact False.elim PF.2
 
---@[autogradedDef 2]
+@[autogradedDef 2]
 def exercise45 (A : Type) : A ⊕ Empty → A := by
-  sorry
+  intro AE
+  cases AE with
+  | inl A =>
+    exact A
+  | inr E =>
+    exact Empty.elim E
 
 -- Zero-branch elimination. Exercises 46 and 47 state the same function. Use
 -- `Empty.elim` in the term proof.
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise46 (A B : Type) (f : A → Empty) : A → B :=
-  sorry
+  fun a ↦ Empty.elim (f a)
 
---@[autogradedDef 1]
+@[autogradedDef 1]
 def exercise47 (A B : Type) (f : A → Empty) : A → B := by
-  sorry
+  intro a
+  apply Empty.elim
+  exact f a
 
 end Homework1
