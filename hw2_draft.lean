@@ -39,17 +39,31 @@ theorem exercise03 (P Q : Prop) : ¬ (P ∨ Q) → ¬ P ∧ ¬ Q :=
 -- Prove the statement constructively.
 
 theorem exercise04 (P Q : Prop) : P ∨ Q → ¬ P → Q := by
-  sorry
+  intro hPQ hnP
+  rcases hPQ with hP | hQ
+  · exact False.elim (hnP hP)
+  · exact hQ
 
 -- Now prove the same statement clasically, using `Classical.byContradiction`.
 
+#check Classical.byContradiction
+#check Or.elim
+
 theorem exercise04_classical (P Q : Prop) : P ∨ Q → ¬ P → Q :=
-  sorry
+  fun hPQ hnP => Classical.byContradiction (
+    fun hnQ =>
+      Or.elim hPQ
+        (fun hP => hnP hP)
+        (fun hQ => hnQ hQ)
+  )
 
 -- Prove this constructive De Morgan direction.
 
 theorem exercise05 (P Q : Prop) : ¬ P ∨ ¬ Q → ¬ (P ∧ Q) := by
-  sorry
+  intro hnPnQ hPQ
+  rcases hnPnQ with hnP | hnQ
+  · exact hnP hPQ.1
+  · exact hnQ hPQ.2
 
 /-! ## Constructive and Classical Proofs -/
 
