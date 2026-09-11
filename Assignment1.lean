@@ -1,5 +1,5 @@
 import Batteries
--- import AutograderLib
+import AutograderLib
 
 /-!
 # Homework 1
@@ -254,11 +254,9 @@ def exercise29 (A B : Type) : A ⊕ B → B ⊕ A :=
 @[autogradedDef 2]
 def exercise30 (A B : Type) : A ⊕ B → B ⊕ A := by
   intro ab
-  cases ab with
-  | inl a
-    => exact Sum.inr a
-  | inr b
-    => exact Sum.inl b
+  rcases ab with a | b
+  · exact Sum.inr a
+  · exact Sum.inl b
 
 -- Regrouping.
 
@@ -266,15 +264,11 @@ def exercise30 (A B : Type) : A ⊕ B → B ⊕ A := by
 def exercise31 (A B C : Type) :
     A ⊕ (B ⊕ C) → (A ⊕ B) ⊕ C := by
   intro abc
-  cases abc with
-  | inl a =>
-      exact Sum.inl (Sum.inl a)
-  | inr bc =>
-    cases bc with
-      | inl b =>
-          exact Sum.inl (Sum.inr b)
-      | inr c =>
-          exact Sum.inr c
+  rcases abc with a | bc
+  · exact Sum.inl (Sum.inl a)
+  · rcases bc with b | c
+    · exact Sum.inl (Sum.inr b)
+    · exact Sum.inr c
 
 
 -- Three alternatives at once. Use a single `rcases` pattern naming all three
@@ -385,11 +379,9 @@ theorem exercise44 (P Q : Prop) : P ∧ False → Q := by
 @[autogradedDef 2]
 def exercise45 (A : Type) : A ⊕ Empty → A := by
   intro AE
-  cases AE with
-  | inl A =>
-    exact A
-  | inr E =>
-    exact Empty.elim E
+  rcases AE with a | e
+  · exact a
+  · exact Empty.elim e
 
 -- Zero-branch elimination. Exercises 46 and 47 state the same function. Use
 -- `Empty.elim` in the term proof.
