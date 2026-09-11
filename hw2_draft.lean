@@ -71,13 +71,23 @@ theorem exercise05 (P Q : Prop) : ¬ P ∨ ¬ Q → ¬ (P ∧ Q) := by
 -- prove the statement constructively; otherwise, prove it classically.
 
 theorem exercise06 (P : Prop) : ¬ ¬ ¬ P → ¬ P := by
-  sorry
+  intro hnnnP hP
+  apply hnnnP
+  intro hnP
+  exact hnP hP
+
 
 -- Decide whether a constructive proof is possible. If it is, prove the
 -- statement constructively; otherwise, prove it classically.
 
 theorem exercise07 (P : Prop) : P ∨ ¬ P → (¬ ¬ P → P) := by
-  sorry
+  intro hPnP
+  rcases hPnP with hP | hnP
+  · intro hnnP
+    exact hP
+  · intro hnnP
+    have hF : False := hnnP hnP
+    exact False.elim hF
 
 -- Assume double-negation elimination for `P ∨ ¬ P` and prove excluded middle.
 -- Exercises 07 and 08 together show that excluded middle and
@@ -85,15 +95,36 @@ theorem exercise07 (P : Prop) : P ∨ ¬ P → (¬ ¬ P → P) := by
 
 theorem exercise08 (P : Prop)
     (dne : ¬ ¬ (P ∨ ¬ P) → P ∨ ¬ P) : P ∨ ¬ P := by
-  sorry
+  apply dne
+  intro hnPnP
+  apply hnPnP
+  right
+  intro hP
+  exact hnPnP (Or.inl hP)
 
 -- You may find `Classical.byContradiction` helpful.
 
+#check Classical.em
+
 theorem exercise09 (P Q : Prop) : ¬ ¬ (P ∧ Q) → Q ∧ P :=
-  sorry
+  fun hnnPQ => Classical.byContradiction (
+    fun hnPQ => (
+      hnnPQ (
+        fun hPQ => hnPQ ⟨hPQ.2, hPQ.1⟩
+      )
+    )
+  )
+
+#check Classical.by_contradiction
+#check Classical.em
 
 theorem exercise10 (P Q : Prop) : (P → Q) → ¬ P ∨ Q :=
-  sorry
+  fun hPQ => Classical.byContradiction (
+    fun hnnPQ => Or.elim (Classical.em P)
+      (fun hP => hnnPQ (Or.inr (hPQ hP)))
+      (fun hnP => hnnPQ (Or.inl hnP))
+  )
+
 
 theorem exercise11 (P Q : Prop) : ¬ ¬ (P ∨ Q) → ¬ P → Q := by
   sorry
