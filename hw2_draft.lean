@@ -127,7 +127,17 @@ theorem exercise10 (P Q : Prop) : (P → Q) → ¬ P ∨ Q :=
 
 
 theorem exercise11 (P Q : Prop) : ¬ ¬ (P ∨ Q) → ¬ P → Q := by
-  sorry
+  intro hnnPQ
+  have hPQ : P ∨ Q := by
+    apply Classical.by_contradiction
+    intro hnPQ
+    exact hnnPQ hnPQ
+  intro hnP
+  rcases hPQ with hP | hQ
+  · exact False.elim (hnP hP)
+  · exact hQ
+
+
 
 theorem exercise12 (P Q R : Prop) (h : ¬ Q → ¬ P ∨ ¬ R) :
     P ∧ R → Q := by
