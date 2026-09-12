@@ -178,12 +178,20 @@ theorem exercise14 (P Q : Prop) : ¬ (P → Q) → P ∧ ¬ Q := by
       exact False.elim (hnP hP)
     exact False.elim (hnPQ hPQ)
 
-
-
 -- Peirce's law. You may find `by_contra` helpful.
 
+#check by_contra
+
 theorem exercise15 (P Q : Prop) : ((P → Q) → P) → P := by
-  sorry
+  intro hPQP
+  apply Classical.byContradiction
+  intro hnP
+  have hnPQ : P → Q := by
+    intro hP
+    exact False.elim (hnP hP)
+  exact hnP (hPQP hnPQ)
+
+
 
 /-! ## Equality and Rewriting -/
 
