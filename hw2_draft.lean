@@ -209,11 +209,15 @@ theorem exercise18 (A : Type) (x y z w : A)
 
 theorem exercise19 (A B : Type) (f : A → B) (x y z : A)
     (hxz : x = z) (hyz : y = z) : f y = f x := by
-  sorry
+  have hyx : y = x :=  Eq.trans hyz hxz.symm
+  rw [hyx]
 
 theorem exercise20 (A : Type) (R : A → A → Prop) (x y z : A)
     (hxy : x = y) (hzy : z = y) (hR : R x y) : R y z := by
-  sorry
+  rw [← hxy]
+  rw [hzy]
+  exact hR
+
 
 theorem exercise21 (A B : Type) (f : A → B) (x y : A) (hxy : x = y) :
     (fun p : A × A ↦ f p.1) (x, y) = f y := by
