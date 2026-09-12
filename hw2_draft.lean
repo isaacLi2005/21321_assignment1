@@ -205,7 +205,7 @@ theorem exercise17 (A B C : Type) (f : A → B) (g : B → C)
 
 theorem exercise18 (A : Type) (x y z w : A)
     (hxy : x = y) (hzy : z = y) (hzw : z = w) : x = w :=
-  sorry
+  Eq.trans hxy (Eq.trans hzy.symm hzw)
 
 theorem exercise19 (A B : Type) (f : A → B) (x y z : A)
     (hxz : x = z) (hyz : y = z) : f y = f x := by
