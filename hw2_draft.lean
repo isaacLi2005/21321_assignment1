@@ -197,11 +197,11 @@ theorem exercise15 (P Q : Prop) : ((P → Q) → P) → P := by
 
 theorem exercise16 (A : Type) (R : A → Prop)
     (x y : A) (hxy : x = y) (hy : R y) : R x :=
-  sorry
+  hxy.symm ▸ hy
 
 theorem exercise17 (A B C : Type) (f : A → B) (g : B → C)
     (x y : A) (hxy : x = y) : g (f x) = g (f y) :=
-  sorry
+  hxy ▸ rfl
 
 theorem exercise18 (A : Type) (x y z w : A)
     (hxy : x = y) (hzy : z = y) (hzw : z = w) : x = w :=
