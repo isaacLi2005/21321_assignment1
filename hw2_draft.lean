@@ -221,22 +221,29 @@ theorem exercise20 (A : Type) (R : A → A → Prop) (x y z : A)
 
 theorem exercise21 (A B : Type) (f : A → B) (x y : A) (hxy : x = y) :
     (fun p : A × A ↦ f p.1) (x, y) = f y := by
-  sorry
+  change f x = f y
+  rw [hxy]
 
 theorem exercise22 (A B : Type) (f : A → B) (x y : A) (hxy : x = y) :
     (let p := (x, f x); p.2) = f y := by
-  sorry
+  change f x = f y
+  rw [hxy]
 
 theorem exercise23 (A B C : Type) (f : A → C) (g : B → C) (b : B) :
     Sum.elim f g (Sum.inr b) = g b := by
-  sorry
+  change g b = g b
+  rfl
 
 -- You may find a case split on `x` helpful.
 
 theorem exercise24 (A B : Type) (x : A ⊕ B) :
     Sum.elim Sum.inr Sum.inl
       (Sum.elim Sum.inr Sum.inl x : B ⊕ A) = x := by
-  sorry
+  rcases x with a | b
+  · change Sum.inl a = Sum.inl a
+    rfl
+  · change Sum.inr b = Sum.inr b
+    rfl
 
 -- Use a `calc` block.
 
