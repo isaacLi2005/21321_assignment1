@@ -137,20 +137,48 @@ theorem exercise11 (P Q : Prop) : ¬ ¬ (P ∨ Q) → ¬ P → Q := by
   · exact False.elim (hnP hP)
   · exact hQ
 
-
-
 theorem exercise12 (P Q R : Prop) (h : ¬ Q → ¬ P ∨ ¬ R) :
     P ∧ R → Q := by
-  sorry
+  intro hPR
+  apply Classical.by_contradiction
+  intro hnQ
+  have hnPnR: ¬ P ∨ ¬ R :=
+    h hnQ
+  rcases hnPnR with hnP | hnR
+  · exact hnP (hPR.1)
+  · exact hnR (hPR.2)
 
 theorem exercise13 (P Q : Prop) : (P → Q) ∨ (Q → P) := by
-  sorry
+  have hPnP : P ∨ ¬ P := Classical.em P
+  rcases hPnP with hP | hnP
+  · right
+    intro hQ
+    exact hP
+  · left
+    intro hP
+    exact False.elim (hnP hP)
 
 -- Decide whether a constructive proof is possible. If it is, prove the
 -- statement constructively; otherwise, prove it classically.
 
+#check Classical.by_contradiction
+
 theorem exercise14 (P Q : Prop) : ¬ (P → Q) → P ∧ ¬ Q := by
-  sorry
+  intro hnPQ
+  have hPnP : P ∨ ¬ P := Classical.em P
+  rcases hPnP with hP | hnP
+  · constructor
+    · exact hP
+    · intro hQ
+      apply hnPQ
+      intro xP
+      exact hQ
+  · have hPQ : P → Q := by
+      intro hP
+      exact False.elim (hnP hP)
+    exact False.elim (hnPQ hPQ)
+
+
 
 -- Peirce's law. You may find `by_contra` helpful.
 
