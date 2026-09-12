@@ -250,7 +250,9 @@ theorem exercise24 (A B : Type) (x : A ⊕ B) :
 theorem exercise25 (A B C : Type) (f : A → B) (g : B → C)
     (x : A) (y : B) (z : C)
     (h : f x = y) (k : z = g y) : g (f x) = z := by
-  sorry
+  calc
+    g (f x) = g (y) := congrArg g h
+    _ = z := k.symm
 
 -- Hint: The two sides are values of the functions appearing in `heq`, but at
 -- different pairs. Use `change` to restate the target as an equality between
@@ -262,6 +264,9 @@ theorem exercise26 (A B C D : Type) (f g : A × B → C) (h k : C → D)
     (a a' : A) (b b' : B) (ha : a = a') (hb : b = b')
     (heq : (fun p : A × B ↦ h (f p)) = (fun p : A × B ↦ k (g p))) :
     h (f (a, b)) = k (g (a', b')) := by
-  sorry
+  change (fun p : A × B ↦ h (f p)) (a, b) = (fun p : A × B ↦ k (g p)) (a', b')
+  rw [ha]
+  rw [hb]
+  rw [heq]
 
 end Homework2
